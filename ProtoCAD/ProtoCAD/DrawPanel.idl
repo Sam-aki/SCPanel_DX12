@@ -1,0 +1,11 @@
+// Copyright (c) Microsoft Corporation and Contributors.
+// Licensed under the MIT License.
+
+namespace ProtoCAD
+{
+    [default_interface]
+    runtimeclass DrawPanel : Microsoft.UI.Xaml.Controls.Control
+    {
+        DrawPanel();
+    }
+}

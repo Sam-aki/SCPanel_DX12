@@ -1,0 +1,17 @@
+<ResourceDictionary
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:ProtoCAD">
+
+    <Style TargetType="local:DrawPanel" >
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="local:DrawPanel">
+                    <Grid>
+                        <SwapChainPanel x:Name="drawSCPanel" Width="700" Height="500"/>
+                    </Grid>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+    </Style>
+</ResourceDictionary>
