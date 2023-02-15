@@ -63,19 +63,16 @@ namespace winrt::ProtoCAD::implementation
 	{
 		if (!CreateDevice())
 		{
-			//デバイスの生成に失敗
 			return false;
 		}
 
 		if (!CreateCommandQueue())
 		{
-			//コマンドキューの生成に失敗
 			return false;
 		}
 
 		if (!CreateSwapChain())
 		{
-			//スワップチェインの生成に失敗
 			return false;
 		}
 
@@ -84,25 +81,21 @@ namespace winrt::ProtoCAD::implementation
 
 		if (!CreateRenderTarget())
 		{
-			//レンダーターゲットの生成に失敗
 			return false;
 		}
 
 		if (!CreateCommandList())
 		{
-			//コマンドリストの生成に失敗
 			return false;
 		}
 
 		if (!CreateFence())
 		{
-			//フェンスの生成に失敗
 			return false;
 		}
 
 		if (!CreateDepthStencil())
 		{
-			//デプスステンシルバッファの生成に失敗
 			return false;
 		}
 
@@ -126,7 +119,6 @@ namespace winrt::ProtoCAD::implementation
 		VertexBuffer(vertexSize, vertexStride, vertices);
 		if (!VBIsValid())
 		{
-			//頂点バッファの生成に失敗
 			return false;
 		}
 
@@ -141,7 +133,6 @@ namespace winrt::ProtoCAD::implementation
 			ConstantBuffer(sizeof(Transform), i);
 			if (!CBIsValid(i))
 			{
-				//変換行列用定数バッファの生成に失敗
 				return false;
 			}
 
@@ -155,24 +146,17 @@ namespace winrt::ProtoCAD::implementation
 		RootSignature();
 		if (!RSIsValid())
 		{
-			//ルートシグネチャの生成に失敗
 			return false;
 		}
-
-		///* pathたしかめたり
-		//path p = current_path();
-		//path p2 = absolute("../../GitLab/ProtoCADcpp2/x64/Debug/ProtoCAD/SimplePS.cso");
-		//*/
 
 		PipelineState();
 		SetInputLayout(Vertex::InputLayout);
 		SetRootSignature(m_pRootSignature.get());
-		SetVS(L"../../GitLab/ProtoCADcpp/x64/Debug/ProtoCAD/SimplePS.cso");
-		SetPS(L"../../GitLab/ProtoCADcpp/x64/Debug/ProtoCAD/SimplePS.cso");
+		SetVS(L"SimplePS.cso");
+		SetPS(L"SimplePS.cso");
 		PSCreate();
 		if (!PSIsValid())
 		{
-			//パイプラインステートの生成に失敗
 			return false;
 		}
 		return true;
@@ -294,18 +278,14 @@ namespace winrt::ProtoCAD::implementation
 #pragma region EngineInit
 	bool DrawPanel::CreateDevice()
 	{
-		//check_hresult(CreateDXGIFactory2(dxgiFactoryFlags, IID_PPV_ARGS(&factory)));
 		check_hresult(CreateDXGIFactory2(dxgiFactoryFlags, guid_of<IDXGIFactory4>(), factory.put_void()));
 
 		com_ptr<IDXGIAdapter1> hardwareAdapter;
-
-		//hardwareAdapter->Release();
 
 		com_ptr<IDXGIAdapter1> adapter;
 
 		com_ptr<IDXGIFactory6> factory6;
 
-		//if (SUCCEEDED(factory.get()->QueryInterface(IID_PPV_ARGS(&factory6))))
 		if (SUCCEEDED(factory.get()->QueryInterface(guid_of<IDXGIFactory6>(), factory6.put_void())))
 		{
 			for (UINT adapterIndex = 0; DXGI_ERROR_NOT_FOUND != factory6->EnumAdapterByGpuPreference(adapterIndex, DXGI_GPU_PREFERENCE_HIGH_PERFORMANCE, guid_of<IDXGIAdapter1>(), adapter.put_void()); ++adapterIndex)
@@ -347,7 +327,6 @@ namespace winrt::ProtoCAD::implementation
 
 		HRESULT hr = D3D12CreateDevice(hardwareAdapter.get(),
 			D3D_FEATURE_LEVEL_11_0,
-			//IID_PPV_ARGS(&m_device));
 			guid_of<ID3D12Device6>(),
 			m_device.put_void());
 
@@ -465,7 +444,6 @@ namespace winrt::ProtoCAD::implementation
 			return false;
 		}
 
-		//m_fenceValue = 1;
 		m_fenceValue[m_CurrentBackBufferIndex]++;
 
 		// Create an event handle to use for frame synchronization.
@@ -507,7 +485,6 @@ namespace winrt::ProtoCAD::implementation
 		heapDesc.NumDescriptors = 1;
 		heapDesc.Type = D3D12_DESCRIPTOR_HEAP_TYPE_DSV;
 		heapDesc.Flags = D3D12_DESCRIPTOR_HEAP_FLAG_NONE;
-		//auto hr = m_device->CreateDescriptorHeap(&heapDesc, IID_PPV_ARGS(&m_dsvHeap));
 		auto hr = m_device->CreateDescriptorHeap(&heapDesc, guid_of<ID3D12DescriptorHeap>(), m_dsvHeap.put_void());
 		if (FAILED(hr))
 		{
@@ -573,12 +550,10 @@ namespace winrt::ProtoCAD::implementation
 			&desc,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			//IID_PPV_ARGS(m_pVBuffer.put()));
 			guid_of<ID3D12Resource>(), m_pVBuffer.put_void());
 
 		if (FAILED(hr))
 		{
-			printf("頂点バッファリソースの生成に失敗");
 			return;
 		}
 
@@ -594,7 +569,6 @@ namespace winrt::ProtoCAD::implementation
 			hr = m_pVBuffer->Map(0, nullptr, &ptr);
 			if (FAILED(hr))
 			{
-				printf("頂点バッファマッピングに失敗");
 				return;
 			}
 
@@ -635,12 +609,10 @@ namespace winrt::ProtoCAD::implementation
 			&desc,
 			D3D12_RESOURCE_STATE_GENERIC_READ,
 			nullptr,
-			//IID_PPV_ARGS(m_pCBuffer[i].put()));
 			guid_of<ID3D12Resource>(), m_pCBuffer[i].put_void());
 
 		if (FAILED(hr))
 		{
-			//定数バッファリソースの生成に失敗
 			return;
 		}
 		
@@ -648,7 +620,6 @@ namespace winrt::ProtoCAD::implementation
 
 		if (FAILED(hr))
 		{
-			//定数バッファのマッピングに失敗
 			return;
 		}
 
@@ -716,7 +687,6 @@ namespace winrt::ProtoCAD::implementation
 			pErrorBlob.put());
 		if (FAILED(hr))
 		{
-			printf("ルートシグネチャシリアライズに失敗");
 			return;
 		}
 
@@ -725,11 +695,9 @@ namespace winrt::ProtoCAD::implementation
 			0, // GPUが複数ある場合のノードマスク（今回は1個しか無い想定なので0）
 			pBlob->GetBufferPointer(), // シリアライズしたデータのポインタ
 			pBlob->GetBufferSize(), // シリアライズしたデータのサイズ
-			//IID_PPV_ARGS(&m_pRootSignature));
 			guid_of<ID3D12RootSignature>(), m_pRootSignature.put_void()); // ルートシグニチャ格納先のポインタ
 		if (FAILED(hr))
 		{
-			printf("ルートシグネチャの生成に失敗");
 			return;
 		}
 
@@ -781,7 +749,6 @@ namespace winrt::ProtoCAD::implementation
 		auto hr = D3DReadFileToBlob(filePath.c_str(), m_pVsBlob.put());
 		if (FAILED(hr))
 		{
-			//printf("頂点シェーダーの読み込みに失敗");
 			return;
 		}
 
@@ -794,7 +761,6 @@ namespace winrt::ProtoCAD::implementation
 		auto hr = D3DReadFileToBlob(filePath.c_str(), m_pPSBlob.put());
 		if (FAILED(hr))
 		{
-			//printf("ピクセルシェーダーの読み込みに失敗");
 			return;
 		}
 
@@ -804,13 +770,11 @@ namespace winrt::ProtoCAD::implementation
 	void DrawPanel::PSCreate()
 	{
 		// パイプラインステートを生成
-		//auto hr = m_device->CreateGraphicsPipelineState(&psdesc, IID_PPV_ARGS(m_pipelineState.put()));
 		auto hr = m_device->CreateGraphicsPipelineState(
 			&psdesc, guid_of<ID3D12PipelineState>(),m_pipelineState.put_void());
 		
 		if (FAILED(hr))
 		{
-			//printf("パイプラインステートの生成に失敗");
 			return;
 		}
 
